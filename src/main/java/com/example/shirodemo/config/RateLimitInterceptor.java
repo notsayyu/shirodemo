@@ -22,16 +22,36 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         System.out.println("用户IP： " + httpServletRequest.getRemoteAddr());
         System.out.println(httpServletRequest.getRequestURI());
         System.out.println(httpServletRequest.getRequestURL());
-        String ip = IpUtil.getIp(httpServletRequest);
+        String ip = IpUtil.getIPAddress(httpServletRequest);
         System.out.println("true Ip: " + ip);
         String path = httpServletRequest.getRequestURI();
 
+        Jedis jedis = jedisPool.getResource();
+
         String  key = ip + path;
 
-        Jedis jedis = jedisPool.getResource();
-        jedis.set(key, "dsygood");
+        String current = jedis.get(key);
+        System.out.println("key = "+key+" ; value = :" + current);
 
-        System.out.println("key = "+key+" ; value = :" + jedis.get(key));
+        if(current != null && Integer.parseInt(current) >= 2) {
+            System.out.println("即将抛出异常");
+            throw new RateLimitException("访问当前api次数过于频繁，请稍事休息~");
+        }
+
+        if(current == null){
+            jedis.incrBy(key, 1);
+            System.out.println("current 为null， key的值+1.。key = "+key+" ; value = :" + current);
+            jedis.expire(key, 60);
+        }else {
+            System.out.println("current 不为null， key的值+1.。key = "+key+" ; value = :" + current);
+            jedis.incrBy(key, 1);
+        }
+
+        System.out.println("分隔符------------------------");
+        System.out.println("key = "+key+" ; value = :" + current);
+
+
+//        throw new RateLimitException("访问次数过多");
 
         return true;
     }

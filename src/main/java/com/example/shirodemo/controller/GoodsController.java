@@ -25,6 +25,14 @@ public class GoodsController {
     }
 
     /**
+     * 分页查询所有商品
+     * */
+    @RequestMapping("/pageAll")
+    public Map getAllGoodsByPage(@RequestParam int pageNum){
+        return goodsService.getAllGoodsByPage(pageNum);
+    }
+
+    /**
      * 事务回滚测试
      * */
     @RequestMapping("transactionTest")

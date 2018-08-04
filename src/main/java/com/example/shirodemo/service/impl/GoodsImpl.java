@@ -44,6 +44,20 @@ public class GoodsImpl implements GoodsService {
         return map;
     }
 
+    @Override
+    public Map<String, Object> getAllGoodsByPage(int pageNum) {
+        Map<String, Object> map = new HashMap();
+        //使用分页插件,核心代码就这一行
+        PageHelper.startPage(pageNum, 4);
+        // 获取数据
+        Page<Goods> goodsList = (Page)goodsMapper.selectAllGoods();
+        map.put("dataList", goodsList);
+        //总页数
+        int totalPages = goodsList.getPages();
+        map.put("totalPages", totalPages);
+        return map;
+    }
+
     @Transactional
     @Override
     public int transactionTest() {

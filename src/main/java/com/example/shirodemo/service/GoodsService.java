@@ -10,6 +10,8 @@ public interface GoodsService {
 
     Map<String, Object> getGoodsByPage(int pageNum, String number);
 
+    Map<String, Object> getAllGoodsByPage(int pageNum);
+
     int transactionTest();
 
     List<Goods> setTest();
