@@ -65,4 +65,12 @@ public class GoodsSqlProvider {
         return sql.toString();
     }
 
+    public String selectByName(String name){
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("goods");
+        sql.WHERE("name = #{name}");
+        return sql.toString();
+    }
+
 }

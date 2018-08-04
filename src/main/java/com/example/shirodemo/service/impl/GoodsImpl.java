@@ -10,6 +10,10 @@ import com.example.shirodemo.service.GoodsService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
+@CacheConfig(cacheNames="goods")
 public class GoodsImpl implements GoodsService {
     @Autowired
     private GoodsMapper goodsMapper;
@@ -83,6 +88,36 @@ public class GoodsImpl implements GoodsService {
             Goods goods = goodsMapper.selectByPrimaryKey(id);
             return goods;
 
+    }
+
+    @Override
+    @Cacheable(key="'goodsKey'")
+    public int save(Goods goods) {
+        return goodsMapper.insert(goods);
+    }
+
+    @Override
+    @Cacheable(key="'id:'+#p0")
+    public Goods get(int id) {
+        Goods goods = goodsMapper.selectByPrimaryKey(id);
+        return goods;
+    }
+
+    @Override
+    @CachePut(key="'goodsKey'")
+    public int update(Goods goods) {
+        return goodsMapper.updateByPrimaryKeySelective(goods);
+    }
+
+    @Override
+    @CacheEvict(key="'goodsKey'")
+    public int delete(int id) {
+        return goodsMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public Goods getSingle(String name) {
+        return goodsMapper.selectByName(name);
     }
 
 //    @Override

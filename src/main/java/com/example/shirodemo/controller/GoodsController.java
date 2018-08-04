@@ -4,17 +4,14 @@ import com.example.shirodemo.model.Goods;
 import com.example.shirodemo.service.GoodsService;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-    @RequestMapping("goods")
+    @RequestMapping("/goods")
 public class GoodsController {
     @Autowired
     private GoodsService goodsService;
@@ -22,7 +19,7 @@ public class GoodsController {
     /**
      * 分页查询所有编号为001的商品
      * */
-    @RequestMapping("page")
+    @RequestMapping("/page")
     public Map getGoodsByPage(@RequestParam int pageNum, @RequestParam String number){
         return goodsService.getGoodsByPage(pageNum, number);
     }
@@ -58,6 +55,38 @@ public class GoodsController {
     public Goods reflectTest(@RequestParam String modelName, @RequestParam int id) throws ClassNotFoundException {
         Class<?> clazz = Class.forName("com.example.shirodemo.model." +  modelName);
         return goodsService.reflectTest(modelName, id, clazz);
+    }
+
+
+    /**
+     * redis缓存test
+     */
+//    @PostMapping("save")
+//    public int save(@RequestBody Goods goods){
+//       return goodsService.save(goods);
+//    }
+
+    @GetMapping("get")
+    public Goods get(int id){
+        return goodsService.get(id);
+    }
+
+    @PutMapping("update")
+    public int update(@RequestBody Goods goods){
+        return goodsService.update(goods);
+    }
+
+    @DeleteMapping("delete")
+    public int delete(int id){
+        return goodsService.delete(id);
+    }
+
+    /**
+     * 单个对象接收list对象的情况test
+     */
+    @GetMapping("single")
+    public Goods getSingle(String name){
+       return goodsService.getSingle(name);
     }
 
 }

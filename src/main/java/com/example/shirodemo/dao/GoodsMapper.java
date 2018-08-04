@@ -58,4 +58,7 @@ public interface GoodsMapper {
 
     @SelectProvider(type = GoodsSqlProvider.class, method = "selectAllGoods")
     List<Goods> selectAllGoods();
+
+    @SelectProvider(type = GoodsSqlProvider.class, method = "selectByName")
+    Goods selectByName(String name);
 }
